@@ -8,11 +8,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import { CheckCircle2, Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const SERVICES = ["Električna energija", "Zemeljski plin", "Telekomunikacije"] as const;
 const TELCO_PAKETI = ["Mobilna telefonija", "Internet", "Televizija", "Poslovna telefonija"] as const;
+
+const ELEKTRIKA_DOBAVITELJI = [
+  "GEN-I", "Elektro Energija", "Energija Plus", "ECE", "E 3", "Petrol",
+  "Energetika Ljubljana", "HEP Energija", "Elektro Maribor Energija",
+];
+const PLIN_DOBAVITELJI = [
+  "Petrol", "Energija Plus", "Geoplin", "Energetika Ljubljana",
+  "Plinarna Maribor", "ECE", "Adriaplin", "Domplan",
+];
+const TELCO_OPERATERJI = [
+  "Telekom Slovenije", "A1 Slovenija", "Telemach", "T-2", "Bob", "Hot Mobil", "Hofer telekom",
+];
 
 const schema = z.object({
   ime_priimek: z.string().trim().min(2, "Vnesite ime in priimek").max(200),

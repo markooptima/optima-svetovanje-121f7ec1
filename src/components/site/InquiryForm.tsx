@@ -127,7 +127,7 @@ export function InquiryForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 rounded-2xl border bg-white p-6 shadow-sm sm:p-10">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 rounded-2xl border bg-white p-6 text-foreground shadow-sm sm:p-10">
       {/* Basic info */}
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Ime in priimek *" error={errors.ime_priimek?.message}>

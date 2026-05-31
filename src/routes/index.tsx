@@ -99,9 +99,6 @@ function Index() {
       <section id="domov" className="bg-hero-navy text-navy-foreground">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-28">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-medium text-gold">
-              <Sparkles className="h-3.5 w-3.5" /> Brezplačna analiza brez obveznosti
-            </div>
             <h1 className="font-display text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               Preverite, ali za <span className="text-gold">elektriko</span>, <span className="text-gold">zemeljski plin</span> ali <span className="text-gold">telekomunikacije</span> plačujete preveč.
             </h1>
@@ -230,9 +227,6 @@ function Index() {
       <section id="povprasevanje" className="bg-navy-deep py-20 text-navy-foreground sm:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-medium text-gold">
-              <HandshakeIcon className="h-3.5 w-3.5" /> Brezplačno • Brez obveznosti
-            </div>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">Pošljite povpraševanje</h2>
             <p className="mx-auto mt-4 max-w-2xl text-white/75">
               Izpolnite osnovne podatke in, če želite, priložite račun ali pogodbo. Na podlagi prejetih informacij pripravimo brezplačno analizo.

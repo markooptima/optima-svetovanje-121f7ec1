@@ -314,15 +314,15 @@ function ContactCard({
   icon: Icon, label, value, href,
 }: { icon: typeof Mail; label: string; value: string; href?: string }) {
   const inner = (
-    <div className="group flex items-center gap-4 rounded-2xl border bg-card p-6 transition hover:border-gold/40 hover:shadow-md">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy text-gold">
+    <div className="group flex h-full items-center gap-4 rounded-2xl border bg-card p-6 transition hover:border-gold/40 hover:shadow-md">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-navy text-gold">
         <Icon className="h-6 w-6" />
       </div>
-      <div>
+      <div className="min-w-0">
         <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</div>
-        <div className="mt-0.5 font-medium">{value}</div>
+        <div className="mt-0.5 break-words font-medium">{value}</div>
       </div>
     </div>
   );
-  return href ? <a href={href}>{inner}</a> : inner;
+  return href ? <a href={href} className="block h-full">{inner}</a> : inner;
 }

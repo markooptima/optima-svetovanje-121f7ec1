@@ -326,3 +326,42 @@ function ConditionalCard({ title, children }: { title: string; children: React.R
     </div>
   );
 }
+
+function SupplierSelect({
+  options, value, onChange, placeholder,
+}: { options: string[]; value: string; onChange: (v: string) => void; placeholder: string }) {
+  const isOther = value !== "" && !options.includes(value);
+  const [mode, setMode] = useState<"list" | "other">(isOther ? "other" : "list");
+  const selectValue = mode === "other" ? "__other__" : (options.includes(value) ? value : "");
+
+  return (
+    <div className="space-y-2">
+      <Select
+        value={selectValue}
+        onValueChange={(v) => {
+          if (v === "__other__") {
+            setMode("other");
+            onChange("");
+          } else {
+            setMode("list");
+            onChange(v);
+          }
+        }}
+      >
+        <SelectTrigger className="h-12"><SelectValue placeholder={placeholder} /></SelectTrigger>
+        <SelectContent>
+          {options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+          <SelectItem value="__other__">Drugo / Ne vem</SelectItem>
+        </SelectContent>
+      </Select>
+      {mode === "other" && (
+        <Input
+          className="h-12"
+          placeholder="Vnesite ime dobavitelja"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+    </div>
+  );
+}

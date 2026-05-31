@@ -193,19 +193,40 @@ export function InquiryForm() {
       {/* Conditional */}
       {services.includes("Električna energija") && (
         <ConditionalCard title="Električna energija">
-          <Field label="Trenutni dobavitelj"><Input {...register("elektrika_dobavitelj")} className="h-12" /></Field>
+          <Field label="Trenutni dobavitelj">
+            <SupplierSelect
+              options={ELEKTRIKA_DOBAVITELJI}
+              value={watch("elektrika_dobavitelj") || ""}
+              onChange={(v) => setValue("elektrika_dobavitelj", v)}
+              placeholder="Izberite dobavitelja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("elektrika_znesek")} className="h-12" /></Field>
         </ConditionalCard>
       )}
       {services.includes("Zemeljski plin") && (
         <ConditionalCard title="Zemeljski plin">
-          <Field label="Trenutni dobavitelj"><Input {...register("plin_dobavitelj")} className="h-12" /></Field>
+          <Field label="Trenutni dobavitelj">
+            <SupplierSelect
+              options={PLIN_DOBAVITELJI}
+              value={watch("plin_dobavitelj") || ""}
+              onChange={(v) => setValue("plin_dobavitelj", v)}
+              placeholder="Izberite dobavitelja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("plin_znesek")} className="h-12" /></Field>
         </ConditionalCard>
       )}
       {services.includes("Telekomunikacije") && (
         <ConditionalCard title="Telekomunikacije">
-          <Field label="Trenutni operater"><Input {...register("telco_operater")} className="h-12" /></Field>
+          <Field label="Trenutni operater">
+            <SupplierSelect
+              options={TELCO_OPERATERJI}
+              value={watch("telco_operater") || ""}
+              onChange={(v) => setValue("telco_operater", v)}
+              placeholder="Izberite operaterja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("telco_znesek")} className="h-12" /></Field>
           <div className="sm:col-span-2">
             <Label className="text-sm font-medium">Kaj vključuje vaš paket?</Label>

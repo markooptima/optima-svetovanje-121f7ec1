@@ -8,11 +8,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import { CheckCircle2, Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const SERVICES = ["Električna energija", "Zemeljski plin", "Telekomunikacije"] as const;
 const TELCO_PAKETI = ["Mobilna telefonija", "Internet", "Televizija", "Poslovna telefonija"] as const;
+
+const ELEKTRIKA_DOBAVITELJI = [
+  "GEN-I", "Elektro Energija", "Energija Plus", "ECE", "E 3", "Petrol",
+  "Energetika Ljubljana", "HEP Energija", "Elektro Maribor Energija",
+];
+const PLIN_DOBAVITELJI = [
+  "Petrol", "Energija Plus", "Geoplin", "Energetika Ljubljana",
+  "Plinarna Maribor", "ECE", "Adriaplin", "Domplan",
+];
+const TELCO_OPERATERJI = [
+  "Telekom Slovenije", "A1 Slovenija", "Telemach", "T-2", "Bob", "Hot Mobil", "Hofer telekom",
+];
 
 const schema = z.object({
   ime_priimek: z.string().trim().min(2, "Vnesite ime in priimek").max(200),
@@ -178,19 +193,40 @@ export function InquiryForm() {
       {/* Conditional */}
       {services.includes("Električna energija") && (
         <ConditionalCard title="Električna energija">
-          <Field label="Trenutni dobavitelj"><Input {...register("elektrika_dobavitelj")} className="h-12" /></Field>
+          <Field label="Trenutni dobavitelj">
+            <SupplierSelect
+              options={ELEKTRIKA_DOBAVITELJI}
+              value={watch("elektrika_dobavitelj") || ""}
+              onChange={(v) => setValue("elektrika_dobavitelj", v)}
+              placeholder="Izberite dobavitelja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("elektrika_znesek")} className="h-12" /></Field>
         </ConditionalCard>
       )}
       {services.includes("Zemeljski plin") && (
         <ConditionalCard title="Zemeljski plin">
-          <Field label="Trenutni dobavitelj"><Input {...register("plin_dobavitelj")} className="h-12" /></Field>
+          <Field label="Trenutni dobavitelj">
+            <SupplierSelect
+              options={PLIN_DOBAVITELJI}
+              value={watch("plin_dobavitelj") || ""}
+              onChange={(v) => setValue("plin_dobavitelj", v)}
+              placeholder="Izberite dobavitelja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("plin_znesek")} className="h-12" /></Field>
         </ConditionalCard>
       )}
       {services.includes("Telekomunikacije") && (
         <ConditionalCard title="Telekomunikacije">
-          <Field label="Trenutni operater"><Input {...register("telco_operater")} className="h-12" /></Field>
+          <Field label="Trenutni operater">
+            <SupplierSelect
+              options={TELCO_OPERATERJI}
+              value={watch("telco_operater") || ""}
+              onChange={(v) => setValue("telco_operater", v)}
+              placeholder="Izberite operaterja"
+            />
+          </Field>
           <Field label="Trenutni mesečni znesek (€)"><Input type="number" step="0.01" {...register("telco_znesek")} className="h-12" /></Field>
           <div className="sm:col-span-2">
             <Label className="text-sm font-medium">Kaj vključuje vaš paket?</Label>
@@ -287,6 +323,45 @@ function ConditionalCard({ title, children }: { title: string; children: React.R
     <div className="rounded-xl border-2 border-gold/30 bg-gold/5 p-5">
       <div className="mb-4 text-sm font-semibold uppercase tracking-wide text-navy">{title}</div>
       <div className="grid gap-4 sm:grid-cols-2">{children}</div>
+    </div>
+  );
+}
+
+function SupplierSelect({
+  options, value, onChange, placeholder,
+}: { options: string[]; value: string; onChange: (v: string) => void; placeholder: string }) {
+  const isOther = value !== "" && !options.includes(value);
+  const [mode, setMode] = useState<"list" | "other">(isOther ? "other" : "list");
+  const selectValue = mode === "other" ? "__other__" : (options.includes(value) ? value : "");
+
+  return (
+    <div className="space-y-2">
+      <Select
+        value={selectValue}
+        onValueChange={(v) => {
+          if (v === "__other__") {
+            setMode("other");
+            onChange("");
+          } else {
+            setMode("list");
+            onChange(v);
+          }
+        }}
+      >
+        <SelectTrigger className="h-12"><SelectValue placeholder={placeholder} /></SelectTrigger>
+        <SelectContent>
+          {options.map((o) => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+          <SelectItem value="__other__">Drugo / Ne vem</SelectItem>
+        </SelectContent>
+      </Select>
+      {mode === "other" && (
+        <Input
+          className="h-12"
+          placeholder="Vnesite ime dobavitelja"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
     </div>
   );
 }

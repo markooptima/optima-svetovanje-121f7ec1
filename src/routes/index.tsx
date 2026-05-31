@@ -266,7 +266,7 @@ function Index() {
             subtitle="Za dodatne informacije ali vprašanja nas lahko kontaktirate tudi neposredno."
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
-            <ContactCard icon={Phone} label="Telefon" value="+386 (0)1 234 5678" href="tel:+38612345678" />
+            <ContactCard icon={Phone} label="Telefon" value="071 378 510" href="tel:071378510" />
             <ContactCard icon={Mail} label="E-pošta" value="info@optima-svetovanje.si" href="mailto:info@optima-svetovanje.si" />
             <ContactCard icon={Building2} label="Podjetje" value="Optima Svetovanje" />
           </div>

@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      inquiries: {
+        Row: {
+          created_at: string
+          dodatne_informacije: string | null
+          elektrika_dobavitelj: string | null
+          elektrika_znesek: number | null
+          email: string
+          file_paths: string[] | null
+          id: string
+          ime_priimek: string
+          naslov: string | null
+          plin_dobavitelj: string | null
+          plin_znesek: number | null
+          podjetje: string | null
+          posta_kraj: string | null
+          privacy_accepted: boolean
+          services: string[]
+          telco_operater: string | null
+          telco_paketi: string[] | null
+          telco_znesek: number | null
+          telefon: string
+        }
+        Insert: {
+          created_at?: string
+          dodatne_informacije?: string | null
+          elektrika_dobavitelj?: string | null
+          elektrika_znesek?: number | null
+          email: string
+          file_paths?: string[] | null
+          id?: string
+          ime_priimek: string
+          naslov?: string | null
+          plin_dobavitelj?: string | null
+          plin_znesek?: number | null
+          podjetje?: string | null
+          posta_kraj?: string | null
+          privacy_accepted?: boolean
+          services?: string[]
+          telco_operater?: string | null
+          telco_paketi?: string[] | null
+          telco_znesek?: number | null
+          telefon: string
+        }
+        Update: {
+          created_at?: string
+          dodatne_informacije?: string | null
+          elektrika_dobavitelj?: string | null
+          elektrika_znesek?: number | null
+          email?: string
+          file_paths?: string[] | null
+          id?: string
+          ime_priimek?: string
+          naslov?: string | null
+          plin_dobavitelj?: string | null
+          plin_znesek?: number | null
+          podjetje?: string | null
+          posta_kraj?: string | null
+          privacy_accepted?: boolean
+          services?: string[]
+          telco_operater?: string | null
+          telco_paketi?: string[] | null
+          telco_znesek?: number | null
+          telefon?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

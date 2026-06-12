@@ -114,9 +114,17 @@ export function InquiryForm() {
         dodatne_informacije: data.dodatne_informacije || null,
         file_paths: paths,
         privacy_accepted: true,
-      });
+      }).select("id").single();
 
       if (error) throw error;
+
+      // Pošlji obvestilo (ne blokira uspeha, če odpove)
+      if (inserted?.id) {
+        notifyInquiry({ data: { inquiryId: inserted.id } }).catch((e) => {
+          console.error("notify failed", e);
+        });
+      }
+
       setDone(true);
       setFiles([]);
     } catch (e) {

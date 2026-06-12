@@ -1,32 +1,21 @@
-## Težava
+Ugotovitev: koda po vnosu povpraševanja shrani podatke, nato pa email obvestilo pošlje “v ozadju”. Zato lahko uporabnik vidi uspeh, tudi če email ne uspe. Na Lovable Cloud je `RESEND_API_KEY` nastavljen, v zadnji uri pa ni logov `notifyInquiry`, kar pomeni, da test verjetno ni bil narejen na Lovable domeni ali pa Vercel okolje tega loga ne pošilja sem.
 
-E-poštna obvestila prihajajo s preview/lovable.app domene, ne pa s `optima-svetovanje.si` (Vercel).
+Plan:
+1. Dodam bolj zanesljivo obravnavo pošiljanja obvestila v obrazcu:
+   - po shranitvi povpraševanja počakamo na rezultat `notifyInquiry`,
+   - če email odpove, uporabniku prikažemo jasno opozorilo namesto tihega neuspeha,
+   - uspešno shranjeno povpraševanje ostane shranjeno.
 
-Razlog: server funkcija `notifyInquiry` bere `process.env.RESEND_API_KEY`. Na Lovable Cloud je ključ nastavljen, na **Vercelu pa še ne** (ali pa zadnji deploy še ne uporablja novega ključa).
+2. Dodam bolj jasne server loge v email funkciji:
+   - log ob začetku pošiljanja,
+   - log ob uspešno sprejetem emailu,
+   - ob napaki se zapiše status in odgovor ponudnika.
 
-## Koraki za rešitev
+3. Po implementaciji preverimo Lovable verzijo z novim testnim povpraševanjem.
 
-1. **Vercel Dashboard → Project → Settings → Environment Variables**
-   - Dodaj (ali uredi) `RESEND_API_KEY` z novo vrednostjo `re_...`
-   - Označi vse okolice: **Production, Preview, Development**
-   - Shrani
+4. Za `optima-svetovanje.si` ostane obvezen zunanji korak:
+   - v Vercelu mora obstajati `RESEND_API_KEY`,
+   - po spremembi je nujen redeploy,
+   - če še vedno ne pride, je treba pogledati Vercel Function logs, ker teh logov ne morem videti iz Lovable okolja.
 
-2. **Vercel → Deployments → zadnji deployment → ⋯ → Redeploy**
-   - Brez redeploya nova okoljska spremenljivka ne začne veljati
-   - Po redeployu počakaj ~30 s, da gre live
-
-3. **Test na `optima-svetovanje.si`**
-   - Pošlji testno povpraševanje
-   - Če mail ne pride: odpri Vercel → Deployment → **Functions / Logs** in poglej napake (`[notifyInquiry] resend failed ...` ali `RESEND_API_KEY missing`)
-
-## Najpogostejši vzroki, če še vedno ne deluje
-
-- Ključ je dodan samo v "Production" — manjka Preview/Development
-- Pozabljen redeploy (brez tega Vercel še vedno uporablja star/manjkajoč key)
-- Vrednost ima presledek/novo vrstico pri prilepljanju
-- Resend ključ ima napačne pravice (potreben **Sending access**)
-- Domena `onboarding@resend.dev` je še vedno OK za testiranje; če uporabljaš lastno domeno, mora biti verificirana v Resendu
-
-## Naslednji korak
-
-Sporoči mi po redeployu, ali test deluje. Če ne, prilepi error iz Vercel Function logov in ti pokažem točen popravek.
+Tehnična opomba: trenutno je prejemnik nastavljen na `marko.optima.svetovanje@gmail.com`, pošiljatelj pa `Optima Povpraševanje <onboarding@resend.dev>`. Če uporabljaš nov Resend račun, mora imeti ključ dovoljenje za pošiljanje; za lastno domeno mora biti domena potrjena v Resendu.

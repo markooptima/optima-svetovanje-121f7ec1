@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyInquiry } from "@/lib/inquiry-notify.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -95,7 +96,7 @@ export function InquiryForm() {
         paths.push(path);
       }
 
-      const { error } = await supabase.from("inquiries").insert({
+      const { data: inserted, error } = await supabase.from("inquiries").insert({
         ime_priimek: data.ime_priimek,
         podjetje: data.podjetje || null,
         naslov: data.naslov || null,

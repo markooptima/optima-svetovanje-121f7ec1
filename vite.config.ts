@@ -12,4 +12,8 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Force-enable nitro and target Vercel when building outside Lovable's sandbox
+  // (e.g. on Vercel CI). Inside Lovable's sandbox this is ignored and Cloudflare
+  // is used automatically, so publishing via Lovable still works.
+  nitro: { preset: "vercel" },
 });

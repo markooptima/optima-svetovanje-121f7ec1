@@ -36,7 +36,7 @@ const schema = z.object({
   naslov: z.string().trim().max(200).optional().or(z.literal("")),
   posta_kraj: z.string().trim().max(120).optional().or(z.literal("")),
   telefon: z.string().trim().min(5, "Vnesite telefonsko številko").max(50),
-  email: z.string().trim().email("Neveljaven e-naslov").max(255),
+  email: z.string().trim().max(255).email("Neveljaven e-naslov").optional().or(z.literal("")),
   services: z.array(z.string()).min(1, "Izberite vsaj eno storitev"),
   elektrika_dobavitelj: z.string().trim().max(120).optional().or(z.literal("")),
   elektrika_znesek: z.string().optional(),

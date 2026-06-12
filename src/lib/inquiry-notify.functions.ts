@@ -180,6 +180,7 @@ export const notifyInquiry = createServerFn({ method: "POST" })
         ...(row.email ? { reply_to: row.email } : {}),
         subject,
         html,
+        ...(resendAttachments.length ? { attachments: resendAttachments } : {}),
       }),
     });
 

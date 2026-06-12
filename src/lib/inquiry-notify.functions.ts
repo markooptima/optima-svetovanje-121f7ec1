@@ -41,15 +41,50 @@ export const notifyInquiry = createServerFn({ method: "POST" })
       return { ok: false, error: "not_found" };
     }
 
-    // Signed URLs for attachments (7 days)
-    const attachments: { name: string; url: string }[] = [];
+    // Prepare attachments (download) + fallback signed URLs (7 days)
+    const MAX_ATTACH_BYTES = 8 * 1024 * 1024; // 8 MB per file
+    const MAX_TOTAL_BYTES = 30 * 1024 * 1024; // 30 MB total (Resend cap ~40 MB)
+    const resendAttachments: { filename: string; content: string }[] = [];
+    const linkFallbacks: { name: string; url: string }[] = [];
+    const allLinks: { name: string; url: string }[] = [];
     const paths: string[] = Array.isArray(row.file_paths) ? row.file_paths : [];
+    let totalBytes = 0;
+
     for (const p of paths) {
+      const displayName = p.split("-").slice(2).join("-") || p;
+
+      // Always create a signed URL as backup / link in email
       const { data: signed } = await supabaseAdmin.storage
         .from("inquiry-uploads")
         .createSignedUrl(p, 60 * 60 * 24 * 7);
       if (signed?.signedUrl) {
-        attachments.push({ name: p.split("-").slice(2).join("-") || p, url: signed.signedUrl });
+        allLinks.push({ name: displayName, url: signed.signedUrl });
+      }
+
+      // Try to download and attach
+      try {
+        const { data: blob, error: dlErr } = await supabaseAdmin.storage
+          .from("inquiry-uploads")
+          .download(p);
+        if (dlErr || !blob) throw dlErr ?? new Error("download_failed");
+
+        const size = blob.size;
+        if (size > MAX_ATTACH_BYTES || totalBytes + size > MAX_TOTAL_BYTES) {
+          if (signed?.signedUrl) linkFallbacks.push({ name: displayName, url: signed.signedUrl });
+          continue;
+        }
+
+        const buf = new Uint8Array(await blob.arrayBuffer());
+        // Base64 encode
+        let binary = "";
+        for (let i = 0; i < buf.length; i++) binary += String.fromCharCode(buf[i]);
+        const b64 = btoa(binary);
+
+        resendAttachments.push({ filename: displayName, content: b64 });
+        totalBytes += size;
+      } catch (e) {
+        console.error("[notifyInquiry] attach failed", p, e);
+        if (signed?.signedUrl) linkFallbacks.push({ name: displayName, url: signed.signedUrl });
       }
     }
 
@@ -85,12 +120,15 @@ export const notifyInquiry = createServerFn({ method: "POST" })
         </td></tr><tr><td style="height:8px"></td></tr>`);
     }
 
-    const attachmentsHtml = attachments.length
-      ? `<h3 style="margin:24px 0 8px;color:#1a2b4a">📎 Priponke</h3>
+    const linksList = linkFallbacks.length ? linkFallbacks : allLinks;
+    const attachmentsHtml = allLinks.length
+      ? `<h3 style="margin:24px 0 8px;color:#1a2b4a">📎 Priložene datoteke</h3>
+         ${resendAttachments.length ? `<p style="margin:0 0 8px;font-size:13px;color:#666">${resendAttachments.length} ${resendAttachments.length === 1 ? "datoteka je priložena" : "datotek je priloženih"} k temu e-mailu.</p>` : ""}
+         ${linksList.length ? `<p style="margin:0 0 6px;font-size:13px;color:#666">${resendAttachments.length ? "Dodatne povezave" : "Povezave do datotek"}:</p>
          <ul style="padding-left:20px;margin:0">
-           ${attachments.map(a => `<li><a href="${a.url}" style="color:#c9a14a">${esc(a.name)}</a></li>`).join("")}
+           ${linksList.map(a => `<li><a href="${a.url}" style="color:#c9a14a">${esc(a.name)}</a></li>`).join("")}
          </ul>
-         <p style="font-size:12px;color:#666;margin-top:4px">Povezave veljajo 7 dni.</p>`
+         <p style="font-size:12px;color:#666;margin-top:4px">Povezave veljajo 7 dni.</p>` : ""}`
       : "";
 
     const html = `<!DOCTYPE html>
@@ -142,6 +180,7 @@ export const notifyInquiry = createServerFn({ method: "POST" })
         ...(row.email ? { reply_to: row.email } : {}),
         subject,
         html,
+        ...(resendAttachments.length ? { attachments: resendAttachments } : {}),
       }),
     });
 

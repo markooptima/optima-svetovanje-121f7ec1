@@ -20,11 +20,13 @@ function fmtEur(n: number | null | undefined) {
 export const notifyInquiry = createServerFn({ method: "POST" })
   .inputValidator(z.object({ inquiryId: z.string().uuid() }).parse)
   .handler(async ({ data }) => {
+    console.log("[notifyInquiry] start", data.inquiryId);
     const RESEND_API_KEY = process.env.RESEND_API_KEY;
     if (!RESEND_API_KEY) {
       console.error("[notifyInquiry] RESEND_API_KEY missing");
       return { ok: false, error: "resend_key_missing" };
     }
+    console.log("[notifyInquiry] key present, length", RESEND_API_KEY.length);
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
@@ -146,8 +148,10 @@ export const notifyInquiry = createServerFn({ method: "POST" })
     if (!resp.ok) {
       const text = await resp.text();
       console.error("[notifyInquiry] resend failed", resp.status, text);
-      return { ok: false, error: `resend_${resp.status}` };
+      return { ok: false, error: `resend_${resp.status}`, detail: text };
     }
 
+    const okBody = await resp.text();
+    console.log("[notifyInquiry] sent", okBody);
     return { ok: true };
   });

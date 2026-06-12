@@ -120,10 +120,17 @@ export function InquiryForm() {
 
       if (error) throw error;
 
-      // Pošlji obvestilo (ne blokira uspeha, če odpove)
-      notifyInquiry({ data: { inquiryId } }).catch((e) => {
-        console.error("notify failed", e);
-      });
+      // Pošlji email obvestilo - počakaj na rezultat
+      try {
+        const result = await notifyInquiry({ data: { inquiryId } });
+        if (!result?.ok) {
+          console.error("notify failed", result);
+          toast.warning("Povpraševanje je shranjeno, vendar email obvestilo ni bilo poslano. Kontaktirali vas bomo.");
+        }
+      } catch (e) {
+        console.error("notify error", e);
+        toast.warning("Povpraševanje je shranjeno, vendar email obvestilo ni bilo poslano. Kontaktirali vas bomo.");
+      }
 
       setDone(true);
       setFiles([]);

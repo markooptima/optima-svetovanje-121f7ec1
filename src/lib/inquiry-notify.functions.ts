@@ -137,7 +137,7 @@ export const notifyInquiry = createServerFn({ method: "POST" })
       body: JSON.stringify({
         from: FROM,
         to: [NOTIFY_TO],
-        reply_to: row.email,
+        ...(row.email ? { reply_to: row.email } : {}),
         subject,
         html,
       }),

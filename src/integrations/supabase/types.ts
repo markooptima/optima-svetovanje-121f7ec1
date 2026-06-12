@@ -20,7 +20,7 @@ export type Database = {
           dodatne_informacije: string | null
           elektrika_dobavitelj: string | null
           elektrika_znesek: number | null
-          email: string
+          email: string | null
           file_paths: string[] | null
           id: string
           ime_priimek: string
@@ -41,7 +41,7 @@ export type Database = {
           dodatne_informacije?: string | null
           elektrika_dobavitelj?: string | null
           elektrika_znesek?: number | null
-          email: string
+          email?: string | null
           file_paths?: string[] | null
           id?: string
           ime_priimek: string
@@ -62,7 +62,7 @@ export type Database = {
           dodatne_informacije?: string | null
           elektrika_dobavitelj?: string | null
           elektrika_znesek?: number | null
-          email?: string
+          email?: string | null
           file_paths?: string[] | null
           id?: string
           ime_priimek?: string

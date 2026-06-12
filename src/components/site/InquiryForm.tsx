@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
+import { notifyInquiry } from "@/lib/inquiry-notify.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -95,7 +96,9 @@ export function InquiryForm() {
         paths.push(path);
       }
 
+      const inquiryId = crypto.randomUUID();
       const { error } = await supabase.from("inquiries").insert({
+        id: inquiryId,
         ime_priimek: data.ime_priimek,
         podjetje: data.podjetje || null,
         naslov: data.naslov || null,
@@ -116,6 +119,12 @@ export function InquiryForm() {
       });
 
       if (error) throw error;
+
+      // Pošlji obvestilo (ne blokira uspeha, če odpove)
+      notifyInquiry({ data: { inquiryId } }).catch((e) => {
+        console.error("notify failed", e);
+      });
+
       setDone(true);
       setFiles([]);
     } catch (e) {

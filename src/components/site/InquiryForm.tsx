@@ -96,7 +96,9 @@ export function InquiryForm() {
         paths.push(path);
       }
 
-      const { data: inserted, error } = await supabase.from("inquiries").insert({
+      const inquiryId = crypto.randomUUID();
+      const { error } = await supabase.from("inquiries").insert({
+        id: inquiryId,
         ime_priimek: data.ime_priimek,
         podjetje: data.podjetje || null,
         naslov: data.naslov || null,
@@ -114,16 +116,14 @@ export function InquiryForm() {
         dodatne_informacije: data.dodatne_informacije || null,
         file_paths: paths,
         privacy_accepted: true,
-      }).select("id").single();
+      });
 
       if (error) throw error;
 
       // Pošlji obvestilo (ne blokira uspeha, če odpove)
-      if (inserted?.id) {
-        notifyInquiry({ data: { inquiryId: inserted.id } }).catch((e) => {
-          console.error("notify failed", e);
-        });
-      }
+      notifyInquiry({ data: { inquiryId } }).catch((e) => {
+        console.error("notify failed", e);
+      });
 
       setDone(true);
       setFiles([]);

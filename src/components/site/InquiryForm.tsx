@@ -185,7 +185,7 @@ export function InquiryForm() {
         <Field label="Telefon *" error={errors.telefon?.message}>
           <Input type="tel" {...register("telefon")} className="h-12" />
         </Field>
-        <Field label="E-pošta *" error={errors.email?.message}>
+        <Field label="E-pošta (neobvezno)" error={errors.email?.message}>
           <Input type="email" {...register("email")} className="h-12" />
         </Field>
       </div>

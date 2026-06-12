@@ -120,12 +120,15 @@ export const notifyInquiry = createServerFn({ method: "POST" })
         </td></tr><tr><td style="height:8px"></td></tr>`);
     }
 
-    const attachmentsHtml = attachments.length
-      ? `<h3 style="margin:24px 0 8px;color:#1a2b4a">📎 Priponke</h3>
+    const linksList = linkFallbacks.length ? linkFallbacks : allLinks;
+    const attachmentsHtml = allLinks.length
+      ? `<h3 style="margin:24px 0 8px;color:#1a2b4a">📎 Priložene datoteke</h3>
+         ${resendAttachments.length ? `<p style="margin:0 0 8px;font-size:13px;color:#666">${resendAttachments.length} ${resendAttachments.length === 1 ? "datoteka je priložena" : "datotek je priloženih"} k temu e-mailu.</p>` : ""}
+         ${linksList.length ? `<p style="margin:0 0 6px;font-size:13px;color:#666">${resendAttachments.length ? "Dodatne povezave" : "Povezave do datotek"}:</p>
          <ul style="padding-left:20px;margin:0">
-           ${attachments.map(a => `<li><a href="${a.url}" style="color:#c9a14a">${esc(a.name)}</a></li>`).join("")}
+           ${linksList.map(a => `<li><a href="${a.url}" style="color:#c9a14a">${esc(a.name)}</a></li>`).join("")}
          </ul>
-         <p style="font-size:12px;color:#666;margin-top:4px">Povezave veljajo 7 dni.</p>`
+         <p style="font-size:12px;color:#666;margin-top:4px">Povezave veljajo 7 dni.</p>` : ""}`
       : "";
 
     const html = `<!DOCTYPE html>

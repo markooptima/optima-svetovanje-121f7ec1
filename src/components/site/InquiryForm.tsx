@@ -104,7 +104,7 @@ export function InquiryForm() {
         naslov: data.naslov || null,
         posta_kraj: data.posta_kraj || null,
         telefon: data.telefon,
-        email: data.email,
+        email: data.email || null,
         services: data.services,
         elektrika_dobavitelj: data.elektrika_dobavitelj || null,
         elektrika_znesek: data.elektrika_znesek ? Number(data.elektrika_znesek) : null,
@@ -137,15 +137,31 @@ export function InquiryForm() {
 
   if (done) {
     return (
-      <div className="rounded-2xl border bg-white p-8 text-center shadow-sm sm:p-12">
-        <CheckCircle2 className="mx-auto h-14 w-14 text-gold" />
-        <h3 className="mt-4 font-display text-2xl font-semibold">Hvala za vaše povpraševanje.</h3>
-        <p className="mt-3 text-muted-foreground">
-          Vaše podatke smo uspešno prejeli. V najkrajšem možnem času vas kontaktiramo.
+      <div className="relative overflow-hidden rounded-2xl border border-gold/30 bg-white p-8 text-center shadow-xl sm:p-14">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-gold to-transparent" />
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gold/10">
+          <CheckCircle2 className="h-12 w-12 text-gold" strokeWidth={2.2} />
+        </div>
+        <h3 className="mt-6 font-display text-3xl font-semibold text-navy sm:text-4xl">
+          Hvala za vaše povpraševanje!
+        </h3>
+        <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-navy/70">
+          Vaše podatke smo uspešno prejeli. V najkrajšem možnem času vas kontaktiramo
+          in pripravimo brezplačno analizo prihrankov.
         </p>
-        <Button onClick={() => setDone(false)} variant="outline" className="mt-6">
-          Pošlji novo povpraševanje
-        </Button>
+        <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-navy/5 px-4 py-2 text-sm font-medium text-navy/80">
+          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-gold" />
+          Odgovor običajno v 24 urah
+        </div>
+        <div className="mt-8">
+          <Button
+            onClick={() => setDone(false)}
+            variant="outline"
+            className="border-navy/20 text-navy hover:bg-navy hover:text-white"
+          >
+            Pošlji novo povpraševanje
+          </Button>
+        </div>
       </div>
     );
   }

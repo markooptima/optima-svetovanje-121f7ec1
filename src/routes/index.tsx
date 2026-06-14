@@ -267,7 +267,7 @@ function Index() {
           />
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
             <ContactCard icon={Phone} label="Telefon" value="071 378 510" href="tel:071378510" />
-            <ContactCard icon={Mail} label="E-pošta" value="info@optima-svetovanje.si" href="mailto:info@optima-svetovanje.si" />
+            <ContactCard icon={Mail} label="E-pošta" value="info@optima-svetovanje.com" href="mailto:info@optima-svetovanje.com" />
             <ContactCard icon={Building2} label="Podjetje" value="Optima Svetovanje" />
           </div>
         </div>

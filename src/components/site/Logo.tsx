@@ -6,7 +6,7 @@ export function Logo({ className = "" }: { className?: string }) {
       <img
         src={logo}
         alt="Optima Svetovanje logo"
-        className="h-10 w-10 rounded-md object-cover ring-1 ring-white/10"
+        className="h-10 w-10 rounded-md object-cover object-[center_15%] ring-1 ring-white/10"
       />
       <div className="leading-tight">
         <div className="font-display text-base font-semibold tracking-tight">

@@ -278,7 +278,7 @@ function Index() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <img src={logo} alt="Optima Svetovanje" className="h-12 w-12 rounded-md object-cover ring-1 ring-white/10" />
+              <img src={logo} alt="Optima Svetovanje" className="h-12 w-12 rounded-md object-cover object-[center_15%] ring-1 ring-white/10" />
               <div>
                 <div className="font-display text-lg font-semibold">
                   Optima <span className="text-gold">Svetovanje</span>

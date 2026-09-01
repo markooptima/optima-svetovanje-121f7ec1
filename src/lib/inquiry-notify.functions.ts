@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const NOTIFY_TO = "info@optima-svetovanje.com";
-const FROM = "Optima Povpraševanje <onboarding@resend.dev>";
+const FROM = "Optima Svetovanje <povprasevanja@optima-svetovanje.si>";
 
 function esc(s: unknown): string {
   if (s === null || s === undefined || s === "") return "—";

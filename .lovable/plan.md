@@ -16,6 +16,12 @@ Ko oddaja povpraševanja uspešno shrani podatke, a e-poštno obvestilo ne gre s
 
 SMS pošiljanje zahteva ponudnika – uporabil bom **Twilio** (podprt konektor). Pred izvedbo boš moral povezati Twilio račun (odprem ti povezovalno kartico) in imeti Twilio telefonsko številko, s katere se pošilja. Twilio SMS je plačljiv po sporočilu.
 
+## Stroški (Twilio)
+
+- SMS na številke v Sloveniji: približno 0,06–0,10 USD na sporočilo (točna cena je odvisna od operaterja prejemnika; točen znesek pokaže Twilio pricing stran za SI).
+- Twilio telefonska številka (pošiljatelj): približno 1–1,5 USD mesečno najemnine.
+- Pri obsegu te strani (nekaj povpraševanj na mesec) so skupni stroški znosni, ker se SMS pošlje samo, ko e-pošta ne uspe.
+
 ## Tehnične podrobnosti
 
 - `src/lib/inquiry-notify.functions.ts`: po neuspešnem Resend klicu (ali ujeti izjemi) klic pomožne funkcije `sendSmsFallback(row)`.

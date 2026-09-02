@@ -1,21 +1,30 @@
-Ugotovitev: koda po vnosu povpraševanja shrani podatke, nato pa email obvestilo pošlje “v ozadju”. Zato lahko uporabnik vidi uspeh, tudi če email ne uspe. Na Lovable Cloud je `RESEND_API_KEY` nastavljen, v zadnji uri pa ni logov `notifyInquiry`, kar pomeni, da test verjetno ni bil narejen na Lovable domeni ali pa Vercel okolje tega loga ne pošilja sem.
+# SMS obvestilo, ko e-pošta ne uspe
 
-Plan:
-1. Dodam bolj zanesljivo obravnavo pošiljanja obvestila v obrazcu:
-   - po shranitvi povpraševanja počakamo na rezultat `notifyInquiry`,
-   - če email odpove, uporabniku prikažemo jasno opozorilo namesto tihega neuspeha,
-   - uspešno shranjeno povpraševanje ostane shranjeno.
+Ko oddaja povpraševanja uspešno shrani podatke, a e-poštno obvestilo ne gre skozi (trenutno Resend vrača napako 401 – neveljaven ključ), naj sistem pošlje kratek SMS povzetek na **+386 40 163 633**.
 
-2. Dodam bolj jasne server loge v email funkciji:
-   - log ob začetku pošiljanja,
-   - log ob uspešno sprejetem emailu,
-   - ob napaki se zapiše status in odgovor ponudnika.
+## Kako bo delovalo
 
-3. Po implementaciji preverimo Lovable verzijo z novim testnim povpraševanjem.
+1. Stranka odda obrazec → podatki se shranijo v bazo (nespremenjeno).
+2. Sistem poskusi poslati e-pošto na marko.optima.svetovanje@gmail.com (nespremenjeno).
+3. Če e-pošta **ne uspe** (napaka ključa, zavrnitev, izpad), se samodejno pošlje SMS:
+   - ime in priimek, telefon stranke, izbrane storitve
+   - opomba, da e-poštno obvestilo ni uspelo
+4. Če e-pošta uspe, se SMS **ne** pošlje.
+5. Sporočilo v obrazcu se posodobi: ko uspe SMS, stranka/ti vidiš, da je obvestilo poslano po SMS.
 
-4. Za `optima-svetovanje.si` ostane obvezen zunanji korak:
-   - v Vercelu mora obstajati `RESEND_API_KEY`,
-   - po spremembi je nujen redeploy,
-   - če še vedno ne pride, je treba pogledati Vercel Function logs, ker teh logov ne morem videti iz Lovable okolja.
+## Kaj potrebujem od tebe
 
-Tehnična opomba: trenutno je prejemnik nastavljen na `marko.optima.svetovanje@gmail.com`, pošiljatelj pa `Optima Povpraševanje <onboarding@resend.dev>`. Če uporabljaš nov Resend račun, mora imeti ključ dovoljenje za pošiljanje; za lastno domeno mora biti domena potrjena v Resendu.
+SMS pošiljanje zahteva ponudnika – uporabil bom **Twilio** (podprt konektor). Pred izvedbo boš moral povezati Twilio račun (odprem ti povezovalno kartico) in imeti Twilio telefonsko številko, s katere se pošilja. Twilio SMS je plačljiv po sporočilu.
+
+## Tehnične podrobnosti
+
+- `src/lib/inquiry-notify.functions.ts`: po neuspešnem Resend klicu (ali ujeti izjemi) klic pomožne funkcije `sendSmsFallback(row)`.
+- SMS se pošlje prek Lovable connector gatewaya (`https://connector-gateway.lovable.dev/twilio/Messages.json`, `application/x-www-form-urlencoded`), z `LOVABLE_API_KEY` + `TWILIO_API_KEY` iz okolja; `From` = Twilio številka (nova skrivnost `TWILIO_FROM_NUMBER`), `To` = +38640163633.
+- Vračilo funkcije se razširi: `{ ok, channel: 'email' | 'sms' | 'none', error? }`.
+- `src/components/site/InquiryForm.tsx`: prikaz besedila glede na `channel` (uspeh po e-pošti / poslano po SMS / obvestilo ni uspelo, a je povpraševanje shranjeno).
+- Besedilo SMS je omejeno na ~300 znakov, brez priponk (te ostanejo dostopne v bazi/storage).
+- Vsi neuspehi se še naprej beležijo v strežniške zapise (`[notifyInquiry]`, `[smsFallback]`).
+
+## Opomba
+
+To ne odpravi vzroka – Resend ključ je še vedno neveljaven. SMS je le rezervni kanal; vzporedno velja preveriti, da je novi Resend ključ iz računa, kjer je verificirana domena optima-svetovanje.si.

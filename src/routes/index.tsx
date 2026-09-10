@@ -10,7 +10,8 @@ import {
   Zap, Flame, Wifi, ArrowRight, CheckCircle2, FileText, Sparkles, ClipboardList,
   Mail, Phone, Building2, ShieldCheck, HandshakeIcon, Eye, HeartHandshake, Calculator, BookOpen,
 } from "lucide-react";
-import logo from "@/assets/optima-logo.jpg";
+import logoAsset from "@/assets/optima-logo.jpg.asset.json";
+const logo = logoAsset.url;
 
 export const Route = createFileRoute("/")({
   head: () => ({

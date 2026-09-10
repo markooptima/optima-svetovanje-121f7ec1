@@ -1,4 +1,5 @@
-import logo from "@/assets/optima-logo.jpg";
+import logoAsset from "@/assets/optima-logo.jpg.asset.json";
+const logo = logoAsset.url;
 
 export function Logo({ className = "" }: { className?: string }) {
   return (

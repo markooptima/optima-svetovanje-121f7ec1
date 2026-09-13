@@ -11,7 +11,7 @@ import {
   Mail, Phone, Building2, ShieldCheck, HandshakeIcon, Eye, HeartHandshake, Calculator, BookOpen,
 } from "lucide-react";
 import logoAsset from "@/assets/optima-logo.jpg.asset.json";
-const logo = logoAsset.url;
+const logo = `https://id-preview--51518e50-5c3c-4721-ad26-f39c2443209b.lovable.app${logoAsset.url}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
